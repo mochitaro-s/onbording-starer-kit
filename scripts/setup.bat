@@ -74,6 +74,28 @@ if not errorlevel 1 (
 
 REM Step 5: Install VS Code Extensions
 echo Installing VS Code Extensions...
+set "extensions_file=vscode\extensions.txt"
+if not exist %extensions_file% (
+    echo Error: Extensions file %extensions_file% not found.
+    exit /b 1
+)
+
+for /f "tokens=* delims=" %%E in (%extensions_file%) do (
+    echo Checking extension: %%E
+    code --list-extensions | findstr /i "%%E" >nul
+    if not errorlevel 1 (
+        echo Extension %%E is already installed. Skipping...
+    ) else (
+        echo Installing extension: %%E
+        code --install-extension %%E
+        if errorlevel 1 (
+            echo Failed to install extension: %%E
+        ) else (
+            echo Successfully installed extension: %%E
+        )
+    )
+)
+
 echo VS Code Extensions installation completed.
 
 echo === Setup Script Complete ===
