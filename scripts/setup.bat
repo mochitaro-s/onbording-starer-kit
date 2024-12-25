@@ -1,5 +1,5 @@
 @echo off
-REM Improved setup script for Visual Studio Code, Git, and Python
+REM Improved setup script for Visual Studio Code, Git, Python, and Task CLI
 REM This script checks for existing installations before proceeding.
 
 setlocal ENABLEDELAYEDEXPANSION
@@ -36,7 +36,7 @@ echo Checking for Python...
 where python >nul 2>nul
 if not errorlevel 1 (
     echo Python is already installed.
-    python --version
+REM    python --version
 ) else (
     echo Installing Python...
     %download_and_install% "https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe" "PythonSetup.exe" "start /wait PythonSetup.exe /quiet InstallAllUsers=1 PrependPath=1"
@@ -44,7 +44,35 @@ if not errorlevel 1 (
     python --version
 )
 
-REM Step 4: Install VS Code Extensions
+REM Step 4: Check and Install Task CLI
+echo Checking for Task CLI...
+where task >nul 2>nul
+if not errorlevel 1 (
+    echo Task CLI is already installed.
+) else (
+    echo Installing Task CLI...
+    REM ダウンロードと解凍の手順
+    curl -LO https://github.com/go-task/task/releases/download/v3.40.1/task_windows_amd64.zip
+    if exist task_windows_amd64.zip (
+        powershell -Command "Expand-Archive -Path 'task_windows_amd64.zip' -DestinationPath 'task_temp'"
+        if exist task_temp\\task.exe (
+            move /Y task_temp\\task.exe C:\\Windows\\System32
+            echo Task CLI installation completed.
+        ) else (
+            echo Failed to locate task.exe after extraction.
+            exit /b 1
+        )
+        REM 不要ファイルの削除
+        echo Cleaning up temporary files...
+        rmdir /s /q task_temp
+        del /f /q task_windows_amd64.zip
+    ) else (
+        echo Failed to download task_windows_amd64.zip.
+        exit /b 1
+    )
+)
+
+REM Step 5: Install VS Code Extensions
 echo Installing VS Code Extensions...
 echo VS Code Extensions installation completed.
 
