@@ -3,6 +3,22 @@
 
 <br>
 
+## 手順
+
+### 必要なツールをインストール
+
+```bash
+scripts\setup.bat 
+```
+
+下記のインストールが実行されます
+- VScode
+- Github
+- Python
+- VScode 拡張機能
+  - vscode\extensions.txt に記載
+
+
 ## Git のコメントルール
 ### Prefix
 - feat: 新しい機能
